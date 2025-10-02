@@ -86,20 +86,6 @@ Este projeto propõe o desenvolvimento de um **site responsivo** que conecta dir
 
 ---
 
-## 6. Estrutura de Pastas
-
-<pre class="overflow-visible!" data-start="3392" data-end="3936"><div class="contain-inline-size rounded-2xl relative bg-token-sidebar-surface-primary"><div class="sticky top-9"><div class="absolute end-0 bottom-0 flex h-9 items-center pe-2"><div class="bg-token-bg-elevated-secondary text-token-text-secondary flex items-center gap-4 rounded-sm px-2 font-sans text-xs"></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="whitespace-pre! language-bash"><span><span>📂 doacao-alimentos-frontend
-├── 📁 public/          </span><span># Arquivos estáticos (favicon, index.html)</span><span>
-├── 📁 src/
-│   ├── 📁 assets/      </span><span># Imagens, ícones, estilos globais</span><span>
-│   ├── 📁 components/  </span><span># Componentes reutilizáveis (Navbar, Footer, Cards)</span><span>
-│   ├── 📁 pages/       </span><span># Páginas principais (Home, Login, Dashboard, etc.)</span><span>
-│   ├── 📁 services/    </span><span># Conexão com APIs (ex: cadastro, login, listagem)</span><span>
-│   ├── App.js          </span><span># Componente principal</span><span>
-│   └── index.js        </span><span># Ponto de entrada</span><span>
-└── package.json        </span><span># Dependências e scripts</span><span>
-</span></span></code></div></div></pre>
-
 ---
 
 ## 7. Conclusão
