@@ -82,12 +82,11 @@ Este projeto propõe o desenvolvimento de um **site responsivo** que conecta dir
 * **Framework CSS:** Bootstrap 5
 * **Acessibilidade:** Padrões **WCAG 2.1**
 * **Controle de versão:** Git/GitHub
-* **Deploy:** Vercel / Netlify / GitHub Pages
 
 ---
 
 ---
 
-## 7. Conclusão
+## 6. Conclusão
 
 O front-end da **Plataforma de Doação de Alimentos** deve unir **tecnologia e solidariedade** em prol de uma causa social. Com um design acessível, intuitivo e responsivo, a aplicação permitirá a conexão direta entre doadores e instituições, fortalecendo iniciativas contra a fome e a desigualdade.
