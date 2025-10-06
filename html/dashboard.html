@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nutribem - Plataforma de Doação</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --azul-escuro: #18444C;
+      --ciano: #049EBB;
+    }
+
+    body {
+      background-color: #f8f9fa;
+    }
+
+    #tela-inicial {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .profile-card {
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: 1px solid #ddd;
+    }
+
+    .profile-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: var(--azul-escuro);
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background-color: var(--ciano);
+    }
+
+    .content {
+      margin-left: 270px;
+      padding: 30px;
+    }
+
+    header {
+      background-color: #fff;
+      padding: 15px 30px;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .btn-primary {
+      background-color: var(--ciano);
+      border: none;
+    }
+
+    .btn-success {
+      background-color: #198754;
+      border: none;
+    }
+
+    .is-invalid {
+      border-color: #dc3545;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="tela-inicial">
+    <div class="container">
+      <h1 class="mb-4">Bem-vindo à Plataforma Nutribem</h1>
+      <h4 class="text-muted mb-5">Selecione seu perfil para continuar</h4>
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <div class="profile-card" onclick="mostrarDashboard('doador')">
+            <h3>Sou Doador</h3>
+            <p>Quero registrar alimentos para doação.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="profile-card" onclick="mostrarDashboard('instituicao')">
+            <h3>Sou Instituição</h3>
+            <p>Quero solicitar alimentos necessários.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard-doador" class="d-none">
+    <div class="sidebar">
+      <h4 class="text-center mb-4">Painel do Doador</h4>
+      <a href="#" class="active" onclick="showContent(event, 'registrar', 'dashboard-doador')">Registrar Doação</a>
+      <a href="#" onclick="showContent(event, 'realizadas', 'dashboard-doador')">Doações Realizadas</a>
+      <a href="#" onclick="showContent(event, 'historico-doador', 'dashboard-doador')">Histórico</a>
+      <hr>
+      <button class="btn btn-outline-light w-100" onclick="voltarParaInicio()">Sair</button>
+    </div>
+    <div class="content">
+      <header>
+        <h5>Bem-vindo, Doador!</h5>
+      </header>
+      <div id="registrar" class="content-section">
+        <h3 class="mt-4">Registrar Nova Doação</h3>
+        <form id="formDoacao" onsubmit="return registrarDoacao(event)">
+          <div class="mb-3"><label for="nome" class="form-label">Nome do Alimento</label><input type="text" id="nome"
+              class="form-control"></div>
+          <div class="mb-3"><label for="quantidade" class="form-label">Quantidade</label><input type="number"
+              id="quantidade" class="form-control"></div>
+          <div class="mb-3"><label for="unidade" class="form-label">Unidade (Ex: kg, L)</label><input type="text"
+              id="unidade" class="form-control"></div>
+          <button type="submit" class="btn btn-primary">Registrar Doação</button>
+        </form>
+        <div id="mensagem-doador" class="mt-3"></div>
+      </div>
+      <div id="realizadas" class="content-section d-none">
+        <h3 class="mt-4">Doações Realizadas</h3>
+        <table class="table table-striped mt-3">
+          <thead class="table-primary">
+            <tr>
+              <th>Data</th>
+              <th>Alimento</th>
+              <th>Quantidade</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaRealizadas"></tbody>
+        </table>
+      </div>
+      <div id="historico-doador" class="content-section d-none">
+        <h3 class="mt-4">Histórico de Doações</h3>
+        <p>Doações mais antigas já concluídas.</p>
+        <ul id="listaHistoricoDoador" class="list-group mt-3">
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard-instituicao" class="d-none">
+    <div class="sidebar">
+      <h4 class="text-center mb-4">Painel da Instituição</h4>
+      <a href="#" class="active" onclick="showContent(event, 'solicitar', 'dashboard-instituicao')">Solicitar
+        Alimentos</a>
+      <a href="#" onclick="showContent(event, 'gerenciar', 'dashboard-instituicao')">Solicitações Feitas</a>
+      <hr>
+      <button class="btn btn-outline-light w-100" onclick="voltarParaInicio()">Sair</button>
+    </div>
+    <div class="content">
+      <header>
+        <h5>Bem-vinda, Instituição!</h5>
+      </header>
+      <div id="solicitar" class="content-section">
+        <h3 class="mt-4">Solicitar Alimentos Necessários</h3>
+        <form id="formSolicitacao" onsubmit="return solicitarAlimento(event)">
+          <div class="mb-3"><label for="alimento-solicitado" class="form-label">Descrição do Alimento</label><input
+              type="text" id="alimento-solicitado" class="form-control"></div>
+          <div class="mb-3"><label for="quantidade-solicitada" class="form-label">Quantidade Necessária</label><input
+              type="text" id="quantidade-solicitada" class="form-control"></div>
+          <button type="submit" class="btn btn-success">Publicar Solicitação</button>
+        </form>
+        <div id="mensagem-solicitacao" class="mt-3"></div>
+      </div>
+      <div id="gerenciar" class="content-section d-none">
+        <h3 class="mt-4">Suas Solicitações Ativas</h3>
+        <table class="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Alimento</th>
+              <th>Quantidade</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaSolicitacoes"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- vetores ---
+    var doacoesRealizadas = [
+      { data: "02/10/2025", alimento: "Feijão", quantidade: "3 kg", status: "Entregue", statusClass: "bg-success" },
+    ];
+    
+    var historicoDoador = [
+      { data: "10/09/2025", item: "2kg de Açúcar", status: "Entregue" },
+      { data: "30/08/2025", item: "10L de Leite", status: "Entregue" },
+    ];
+
+    var solicitacoesInstituicao = [
+      { data: "05/10/2025", alimento: "Óleo de Soja", quantidade: "30 L", status: "Ativa", statusClass: "bg-success" }
+    ];
+
+    // --- navegacao por topicos ---
+    function mostrarDashboard(tipo) {
+      document.getElementById('tela-inicial').classList.add('d-none');
+      if (tipo === 'doador') {
+        document.getElementById('dashboard-doador').classList.remove('d-none');
+      } else if (tipo === 'instituicao') {
+        document.getElementById('dashboard-instituicao').classList.remove('d-none');
+      }
+    }
+
+    function voltarParaInicio() {
+      document.getElementById('dashboard-doador').classList.add('d-none');
+      document.getElementById('dashboard-instituicao').classList.add('d-none');
+      document.getElementById('tela-inicial').classList.remove('d-none');
+    }
+
+    function showContent(event, contentId, dashboardId) {
+      event.preventDefault();
+      var dashboard = document.getElementById(dashboardId);
+      for (var secao of dashboard.querySelectorAll('.content-section')) {
+        secao.classList.add('d-none');
+      }
+      dashboard.querySelector('#' + contentId).classList.remove('d-none');
+      for (var link of dashboard.querySelectorAll('.sidebar a')) {
+        link.classList.remove('active');
+      }
+      event.currentTarget.classList.add('active');
+    }
+
+    // --- renderizar doacoes realizadas ---
+    function renderizarTudo() {
+      var tabelaRealizadasBody = document.getElementById("tabelaRealizadas");
+      tabelaRealizadasBody.innerHTML = '';
+      for (var doacao of doacoesRealizadas) {
+        tabelaRealizadasBody.innerHTML += '<tr><td>' + doacao.data + '</td><td>' + doacao.alimento + '</td><td>' + doacao.quantidade + '</td><td><span class="badge ' + doacao.statusClass + '">' + doacao.status + '</span></td></tr>';
+      }
+
+      // renderiza historico
+      var listaHistoricoDoador = document.getElementById("listaHistoricoDoador");
+      listaHistoricoDoador.innerHTML = '';
+      for (var item of historicoDoador) {
+        listaHistoricoDoador.innerHTML += '<li class="list-group-item">' + item.data + ' - ' + item.item + ' - ' + item.status + '</li>';
+      }
+
+      // renderiza solicitacoes da instituicao
+      var tabelaSolicitacoesBody = document.getElementById("tabelaSolicitacoes");
+      tabelaSolicitacoesBody.innerHTML = '';
+      for (var solicitacao of solicitacoesInstituicao) {
+        tabelaSolicitacoesBody.innerHTML += '<tr><td>' + solicitacao.data + '</td><td>' + solicitacao.alimento + '</td><td>' + solicitacao.quantidade + '</td><td><span class="badge ' + solicitacao.statusClass + '">' + solicitacao.status + '</span></td></tr>';
+      }
+    }
+
+    // --- formulario (doador) ---
+    function registrarDoacao(event) {
+      event.preventDefault();
+
+      var nome = document.getElementById("nome");
+      var quantidade = document.getElementById("quantidade");
+      var unidade = document.getElementById("unidade");
+      var mensagem = document.getElementById("mensagem-doador");
+
+      nome.classList.remove("is-invalid"); quantidade.classList.remove("is-invalid"); unidade.classList.remove("is-invalid"); mensagem.innerHTML = ""; 
+      var valido = true;
+
+      if (nome.value.trim() === "") { 
+        nome.classList.add("is-invalid"); 
+        valido = false; 
+      }
+      if (unidade.value.trim() === "") { 
+        unidade.classList.add("is-invalid"); 
+        valido = false; 
+      }
+      if (quantidade.value.trim() === "" || parseInt(quantidade.value) <= 0) { 
+        quantidade.classList.add("is-invalid"); 
+        valido = false; 
+      }
+      if (!valido) {
+        mensagem.innerHTML = '<div class="alert alert-danger">Preencha corretamente os campos destacados.</div>'; return false;
+      }
+
+      var dataAtual = new Date().toLocaleDateString('pt-BR');
+      var novaDoacao = { data: dataAtual, alimento: nome.value, quantidade: quantidade.value + ' ' + unidade.value, status: "Aguardando Coleta", statusClass: "bg-info text-dark" };
+
+      doacoesRealizadas.push(novaDoacao);
+      renderizarTudo();
+      mensagem.innerHTML = '<div class="alert alert-success">Doação registrada com sucesso!</div>';
+      document.getElementById("formDoacao").reset();
+      nome.focus();
+      return false;
+    }
+
+    // --- formulario instituicao ---
+    function solicitarAlimento(event) {
+      event.preventDefault();
+
+      var alimento = document.getElementById("alimento-solicitado");
+      var quantidade = document.getElementById("quantidade-solicitada");
+      var mensagem = document.getElementById("mensagem-solicitacao");
+      
+      alimento.classList.remove("is-invalid"); quantidade.classList.remove("is-invalid"); mensagem.innerHTML = "";
+      var valido = true;
+
+      if (alimento.value.trim() === "") { 
+        alimento.classList.add("is-invalid"); 
+        valido = false; 
+      }
+      if (quantidade.value.trim() === "") { 
+        quantidade.classList.add("is-invalid"); 
+        valido = false;
+      }
+      if (!valido) { 
+        mensagem.innerHTML = '<div class="alert alert-danger">Preencha corretamente os campos destacados.</div>'; return false; 
+      }
+
+      var novaSolicitacao = { data: new Date().toLocaleDateString('pt-BR'), alimento: alimento.value, quantidade: quantidade.value, status: "Ativa", statusClass: "bg-success" };
+      solicitacoesInstituicao.push(novaSolicitacao);
+      renderizarTudo();
+
+      mensagem.innerHTML = '<div class="alert alert-success">Sua solicitação foi publicada!</div>';
+      document.getElementById("formSolicitacao").reset();
+      alimento.focus();
+      return false;
+    }
+
+    // --- inicializacao ---
+    window.onload = function () {
+      renderizarTudo();
+    };
+  </script>
+
+</body>
+
+</html>
